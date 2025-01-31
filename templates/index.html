@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restocking Analysis</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <h1>Restocking Analysis</h1>
+      <form id="prediction-form">
+        <div class="form-group">
+          <label for="string-select">Select Store</label>
+          <select id="string-select" name="string_value" required>
+            <option value="" disabled selected>Choose an option</option>
+            <option value=20>Store 20</option>
+            <option value=142>Store 142</option>
+            <option value=185>Store 185</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="integer-select">Select Category</label>
+          <select id="integer-select" name="integer_value" required>
+            <option value="" disabled selected>Choose an option</option>
+            <option value=20100>nacs description</option>            
+          </select>
+        </div>
+
+        <button type="submit" id="predict-btn">Predict</button>
+      </form>
+      <div id="result" class="result"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("prediction-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const store = document.getElementById("string-select").value;
+      const category = document.getElementById("integer-select").value;
+
+      if (!store || !category) {
+        alert("Please select both store and category!");
+        return;
+      }
+
+      const response = await fetch("/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ store: store, category: category }),
+      });
+
+      const data = await response.json();
+      
+      const resultDiv = document.getElementById("result");
+      resultDiv.textContent = `Prediction: ${data.prediction}`;
+
+      if (data.prediction === "No restock needed") {
+            resultDiv.className = "result success"; // Green for success
+      } else {
+            resultDiv.className = "result error"; // Red for error
+      }
+    });
+  </script>
+</body>
+</html>
