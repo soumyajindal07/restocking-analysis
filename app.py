@@ -8,7 +8,6 @@ from flask import jsonify
 
 app = Flask(__name__)
 
-
 path = Path(__file__).parent
 model_path = path / 'model_2801.joblib'
 
