@@ -17,4 +17,18 @@ jobs:
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-        run: git push --force https://SoumyaJ:$HF_TOKEN@huggingface.co/spaces/SoumyaJ/Restocking-prediction main
+        run: 
+		from huggingface_hub import HfApi
+        import os
+
+        repo_id = "SoumyaJ/Restocking-prediction"  # Change this to your HF Space
+
+        api = HfApi()
+
+        api.upload_folder(
+            folder_path=".",  # Upload everything in the repo
+            repo_id=repo_id,
+            repo_type="space",
+            token=os.getenv("HF_TOKEN"),
+        )
+		git push --force https://SoumyaJ:$HF_TOKEN@huggingface.co/spaces/SoumyaJ/Restocking-prediction main
